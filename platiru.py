@@ -63,6 +63,7 @@ class PlatiRu:
         print("\n", "-" * 100, "\n")
         time.sleep(10)
         self.lst.sort()
+        self.lst = self.lst[::-1]
 
         def f(l):
             n = []
