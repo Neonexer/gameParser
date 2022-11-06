@@ -1,12 +1,52 @@
 import requests
 from bs4 import BeautifulSoup
 from threading import Thread
-import time
+from flask import Flask, render_template, request, redirect, url_for
+import time, webbrowser
+
+app = Flask(__name__)
+
+@app.route('/')
+@app.route('/login',methods = ['POST', 'GET'])
+def login():
+   if request.method == 'POST':
+      name = request.form['name']
+      key = request.form['key']
+      global content
+      content = []
+      a = PlatiRu(name, key)
+      time.sleep(13)
+      return """<form action = "http://localhost:5000/login" method = "post">
+         <p>Game:</p>
+         <p><input type = "text" name = "name" /></p>
+         <p><input type = "key" name = "key" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>""" + a.__str__()
+   else:
+      user = request.args.get('name')
+      return render_template('login.html')
+
+
+content = []
 
 class PlatiRu:
     """
     parsing plati.ru for games
     """
+
+    def __str__(self):
+        global content
+        result = ""
+        for i in content:
+            price = i.split(":")[0]
+            cells = i.split(":")[1]
+            name = i.split(":")[2]
+            href = i.split(":")[4]
+            result += f"<div>{price} : {cells} : <b><i>{name}</i></b> : <a href={href}>Ссылка</a></div>"
+        try:
+            return result
+        except:
+            return "Error"
 
     def __init__(self, search, key="", notKey=""):
 
@@ -60,10 +100,11 @@ class PlatiRu:
                 self.lst.append([[price], ["Продаж - ", sells], [name], [href]])
 
     def kek(self):
+        global content
         print("\n", "-" * 100, "\n")
         time.sleep(10)
         self.lst.sort()
-        self.lst = self.lst[::-1]
+        #self.lst = self.lst[::-1]
 
         def f(l):
             n = []
@@ -75,8 +116,18 @@ class PlatiRu:
         lst = f(self.lst)
 
         for i in lst:
-            text = str(i[0]) + " : " + str(i[1]) + " : " + str(i[2]) + " : " + str(i[3]) + "\n"
+            text = str(i[0][0]) + " : " + str(i[1][0]) + str(i[1][1]) + " : " + str(i[2][0]) + " : " + str(i[3][0]) + "\n"
+            content.append(text)
             print(text)
 
         print(len(lst))
-        input()
+
+
+if __name__ == "__main__":
+    #PlatiRu(input("Search:"), input("Key:"), input("bad key:"))
+    #PlatiRu("lego")
+    #time.sleep(2)
+    webbrowser.open("http://127.0.0.1:5000/login")
+    app.debug = False
+    app.run(host='0.0.0.0', port=5000)
+
