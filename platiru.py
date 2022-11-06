@@ -16,12 +16,18 @@ def login():
       content = []
       a = PlatiRu(name, key)
       time.sleep(13)
-      return """<form action = "http://localhost:5000/login" method = "post">
-         <p>Game:</p>
+      return """<style>
+        body{
+            background-color: grey;
+        }
+        </style><form action = "http://localhost:5000/login" method = "post" style="text-align: center;
+       background-color: silver; padding-right: 650px; padding-left: 650px">
+         <p><b>Game:</b></p>
          <p><input type = "text" name = "name" /></p>
          <p><input type = "key" name = "key" /></p>
          <p><input type = "submit" value = "submit" /></p>
-      </form>""" + a.__str__()
+      </form>""" + f"""<div style="text-align: center;
+       background-color: silver;">{a.__str__()}</div>"""
    else:
       user = request.args.get('name')
       return render_template('login.html')
@@ -38,11 +44,12 @@ class PlatiRu:
         global content
         result = ""
         for i in content:
-            price = i.split(":")[0]
-            cells = i.split(":")[1]
-            name = i.split(":")[2]
-            href = i.split(":")[4]
+            price = i[0][0]
+            cells = i[0][1]
+            name = i[0][2]
+            href = i[0][3]
             result += f"<div>{price} : {cells} : <b><i>{name}</i></b> : <a href={href}>Ссылка</a></div>"
+            print(i[0])
         try:
             return result
         except:
@@ -117,8 +124,10 @@ class PlatiRu:
 
         for i in lst:
             text = str(i[0][0]) + " : " + str(i[1][0]) + str(i[1][1]) + " : " + str(i[2][0]) + " : " + str(i[3][0]) + "\n"
-            content.append(text)
-            print(text)
+            a = []
+            a.append([str(i[0][0]), str(i[1][0]) + str(i[1][1]), str(i[2][0]), str(i[3][0])])
+            content.append(a)
+            #print(text)
 
         print(len(lst))
 
@@ -127,7 +136,8 @@ if __name__ == "__main__":
     #PlatiRu(input("Search:"), input("Key:"), input("bad key:"))
     #PlatiRu("lego")
     #time.sleep(2)
-    webbrowser.open("http://127.0.0.1:5000/login")
+    webbrowser.open("http://127.0.0.1:5000/")
     app.debug = False
-    app.run(host='0.0.0.0', port=5000)
+    app.run()
+    #app.run(host='0.0.0.0', port=5000)
 
