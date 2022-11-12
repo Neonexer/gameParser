@@ -16,18 +16,19 @@ def login():
       content = []
       a = PlatiRu(name, key)
       time.sleep(13)
-      return """<style>
-        body{
-            background-color: grey;
-        }
-        </style><form action = "http://localhost:5000/login" method = "post" style="text-align: center;
-       background-color: silver; padding-right: 650px; padding-left: 650px">
-         <p><b>Game:</b></p>
-         <p><input type = "text" name = "name" /></p>
-         <p><input type = "key" name = "key" /></p>
-         <p><input type = "submit" value = "submit" /></p>
-      </form>""" + f"""<div style="text-align: center;
-       background-color: silver;">{a.__str__()}</div>"""
+      return render_template("login.html", content=a.__str__())
+      # return """<style>
+      #   body{
+      #       background-color: grey;
+      #   }
+      #   </style><form action = "http://localhost:5000/login" method = "post" style="text-align: center;
+      #  background-color: silver; padding-right: 650px; padding-left: 650px">
+      #    <p><b>Game:</b></p>
+      #    <p><input type = "text" name = "name" /></p>
+      #    <p><input type = "key" name = "key" /></p>
+      #    <p><input type = "submit" value = "submit" /></p>
+      # </form>""" + f"""<div style="text-align: center;
+      #  background-color: silver;">{a.__str__()}</div>"""
    else:
       user = request.args.get('name')
       return render_template('login.html')
@@ -42,16 +43,18 @@ class PlatiRu:
 
     def __str__(self):
         global content
-        result = ""
-        for i in content:
-            price = i[0][0]
-            cells = i[0][1]
-            name = i[0][2]
-            href = i[0][3]
-            result += f"<div>{price} : {cells} : <b><i>{name}</i></b> : <a href={href}>Ссылка</a></div>"
-            print(i[0])
+        # result = ""
+        # for i in content:
+        #     price = i[0][0]
+        #     cells = i[0][1]
+        #     name = i[0][2]
+        #     href = i[0][3]
+        #     img = i[0][4]
+        #     #result += f"<div>{price} : {cells} : <b><i>{name}</i></b> : <a href={href}>Ссылка</a></div>"
+        #     result += f"{price} : {cells} : {name} : {href}"
+        #     print(i[0])
         try:
-            return result
+            return content
         except:
             return "Error"
 
@@ -84,6 +87,7 @@ class PlatiRu:
         soup = BeautifulSoup(response.text, features="html.parser")
 
         elements = soup.find_all('li', class_="shadow")
+        img = soup.find("img")["src"]
         for i in elements:
             h1 = i.find_next("h1", style="font-size:12px;")
 
@@ -104,7 +108,7 @@ class PlatiRu:
                 sells = "Error"
 
             if (("key" in name.lower() or "ключ" in name.lower()) and self.key in name.lower()) and self.notKey not in name.lower(): # Убираем аккаунты из списка
-                self.lst.append([[price], ["Продаж - ", sells], [name], [href]])
+                self.lst.append([[price], ["Продаж - ", sells], [name], [href], [img]])
 
     def kek(self):
         global content
@@ -125,7 +129,7 @@ class PlatiRu:
         for i in lst:
             text = str(i[0][0]) + " : " + str(i[1][0]) + str(i[1][1]) + " : " + str(i[2][0]) + " : " + str(i[3][0]) + "\n"
             a = []
-            a.append([str(i[0][0]), str(i[1][0]) + str(i[1][1]), str(i[2][0]), str(i[3][0])])
+            a.append([str(i[0][0]), str(i[1][0]) + str(i[1][1]), str(i[2][0]), str(i[3][0]), str(i[4][0])])
             content.append(a)
             #print(text)
 

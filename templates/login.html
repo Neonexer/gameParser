@@ -1,12 +1,55 @@
-<html style="background-color: grey">
-<title>Game hunter</title>
-   <body>
-      <form action = "http://localhost:5000/login" method = "post" style="text-align: center;
-       background-color: silver; margin-right: 650px; margin-left: 650px">
+<html>
+<head>
+		<meta charset="utf-8">
+		<title>Game hunter</title>
+	</head>
+<body>
+    <style>
+        html{
+            background-color: grey;
+            background-image: url('https://thumbs.dreamstime.com/b/online-shopping-concept-open-laptop-store-icon-buy-payme-payment-business-marketing-digital-network-connection-work-128335516.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        form{
+
+            text-align: center;
+            background-color: silver;
+            margin-right: 650px;
+            margin-left: 650px;
+            border-radius: 10px;
+        }
+
+        .content{
+            text-align: center;
+            background: silver;
+            border-radius: 10px;
+            margin-top: 10px;
+            margin-left: 350px;
+            margin-right: 350px;
+        }
+   </style>
+   {% if not content %}
+      <form action = "http://localhost:5000/login" method = "post">
          <p><b>Game:</b></p>
-         <p><input type = "text" name = "name" /></p>
+         <p><input type = "text" name = "name" autofocus/></p>
          <p><input type = "key" name = "key" /></p>
          <p><input type = "submit" value = "submit"/></p>
+         <!--<img src="https://www.minecraft.net/content/dam/games/minecraft/key-art/Games_Subnav_Minecraft-300x465.jpg">-->
       </form>
+   {% else %}
+   <form action = "http://localhost:5000/login" method = "post">
+         <p><b>Game:</b></p>
+         <p><input type = "text" name = "name" autofocus /></p>
+         <p><input type = "key" name = "key" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+   </form>
+      {% for i in content %}
+      <div class="content">
+          <div>{{i[0][0]}} : {{i[0][1]}} : <b><i>{{i[0][2]}}</i></b> : <a href={{i[0][3]}}>Ссылка</a></div>
+      </div>
+      {% endfor %}
+   {% endif %}
    </body>
 </html>
